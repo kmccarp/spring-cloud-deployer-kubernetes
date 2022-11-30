@@ -70,7 +70,7 @@ public class PredicateRunningPhaseDeploymentStateResolver implements RunningPhas
 		return null;
 	}
 
-	static abstract class ContainerStatusCondition implements Predicate<ContainerStatus> {
+	abstract static class ContainerStatusCondition implements Predicate<ContainerStatus> {
 		private final String description;
 
 		ContainerStatusCondition(String description) {

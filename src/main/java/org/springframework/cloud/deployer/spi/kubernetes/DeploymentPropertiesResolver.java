@@ -183,7 +183,7 @@ class DeploymentPropertiesResolver {
 			gpuCount = properties.getLimits().getGpuCount();
 		}
 
-		Map<String,Quantity> limits = new HashMap<String,Quantity>();
+		Map<String,Quantity> limits = new HashMap<>();
 
 		if (StringUtils.hasText(memory)) {
 			limits.put("memory", new Quantity(memory));
@@ -253,7 +253,7 @@ class DeploymentPropertiesResolver {
 
 		logger.debug("Using requests - cpu: " + cpuOverride + " mem: " + memOverride);
 
-		Map<String,Quantity> requests = new HashMap<String, Quantity>();
+		Map<String,Quantity> requests = new HashMap<>();
 
 		if (memOverride != null) {
 			requests.put("memory", new Quantity(memOverride));
@@ -595,8 +595,7 @@ class DeploymentPropertiesResolver {
 				this.propertyPrefix + ".additionalContainers", "additionalContainers" );
 
 		if (deployerProperties.getAdditionalContainers() != null) {
-			deployerProperties.getAdditionalContainers().forEach(container ->
-					containers.add(container));
+			deployerProperties.getAdditionalContainers().forEach(containers::add);
 		}
 
 		// Add the containers from the original properties excluding the containers with the matching names from the
@@ -606,7 +605,7 @@ class DeploymentPropertiesResolver {
 					.filter(container -> containers.stream()
 							.noneMatch(existing -> existing.getName().equals(container.getName())))
 					.collect(Collectors.toList())
-					.forEach(container -> containers.add(container));
+					.forEach(containers::add);
 		}
 
 		return containers;

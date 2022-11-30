@@ -194,7 +194,7 @@ public class AbstractKubernetesDeployer {
 		List<String> imagePullSecrets = this.deploymentPropertiesResolver.getImagePullSecrets(deploymentProperties);
 
 		if (imagePullSecrets != null) {
-			imagePullSecrets.forEach(imgPullsecret -> podSpec.addNewImagePullSecret(imgPullsecret));
+			imagePullSecrets.forEach(podSpec::addNewImagePullSecret);
 		}
 
 		boolean hostNetwork = this.deploymentPropertiesResolver.getHostNetwork(deploymentProperties);

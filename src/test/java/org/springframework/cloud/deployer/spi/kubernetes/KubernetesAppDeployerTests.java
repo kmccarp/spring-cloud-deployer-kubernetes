@@ -314,7 +314,7 @@ public class KubernetesAppDeployerTests {
         PodSpec podSpec = deployer.createPodSpec(appDeploymentRequest);
 
         assertThat(podSpec.getServiceAccountName()).isNotNull();
-        assertThat(podSpec.getServiceAccountName().equals("myserviceaccount"));
+        assertThat("myserviceaccount".equals(podSpec.getServiceAccountName()));
     }
 
     @Test
@@ -330,7 +330,7 @@ public class KubernetesAppDeployerTests {
         PodSpec podSpec = deployer.createPodSpec(appDeploymentRequest);
 
         assertThat(podSpec.getServiceAccountName()).isNotNull();
-        assertThat(podSpec.getServiceAccountName().equals("myserviceaccount"));
+        assertThat("myserviceaccount".equals(podSpec.getServiceAccountName()));
     }
 
     @Test
@@ -349,7 +349,7 @@ public class KubernetesAppDeployerTests {
         PodSpec podSpec = deployer.createPodSpec(appDeploymentRequest);
 
         assertThat(podSpec.getServiceAccountName()).isNotNull();
-        assertThat(podSpec.getServiceAccountName().equals("overridesan"));
+        assertThat("overridesan".equals(podSpec.getServiceAccountName()));
     }
 
     @Test
