@@ -22,7 +22,7 @@ package org.springframework.cloud.deployer.spi.kubernetes;
  * @since 2.5
  */
 public enum ProbeType {
-	HTTP,
-	TCP,
-	COMMAND
+    HTTP,
+    TCP,
+    COMMAND
 }

@@ -24,20 +24,20 @@ import org.springframework.cloud.deployer.spi.app.DeploymentState;
  * @author David Turanski
  **/
 class CompositeDeploymentStateResolver implements RunningPhaseDeploymentStateResolver {
-	private final RunningPhaseDeploymentStateResolver[] delegates;
+    private final RunningPhaseDeploymentStateResolver[] delegates;
 
-	CompositeDeploymentStateResolver(RunningPhaseDeploymentStateResolver... delegates) {
-		this.delegates = delegates;
-	}
+    CompositeDeploymentStateResolver(RunningPhaseDeploymentStateResolver... delegates) {
+        this.delegates = delegates;
+    }
 
-	@Override
-	public DeploymentState resolve(ContainerStatus containerStatus) {
-		for (RunningPhaseDeploymentStateResolver resolver: delegates) {
-			DeploymentState deploymentState = resolver.resolve(containerStatus);
-			if (deploymentState != null) {
-				return deploymentState;
-			}
-		}
-		return null;
-	}
+    @Override
+    public DeploymentState resolve(ContainerStatus containerStatus) {
+        for (RunningPhaseDeploymentStateResolver resolver : delegates) {
+            DeploymentState deploymentState = resolver.resolve(containerStatus);
+            if (deploymentState != null) {
+                return deploymentState;
+            }
+        }
+        return null;
+    }
 }

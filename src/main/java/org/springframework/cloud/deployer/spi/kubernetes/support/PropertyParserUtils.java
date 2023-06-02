@@ -31,44 +31,44 @@ import org.springframework.util.StringUtils;
  * @author Glenn Renfro
  */
 public class PropertyParserUtils {
-	/**
-	 * Extracts annotations from the provided value
-	 *
-	 * @param stringPairs The deployment request annotations
-	 * @return {@link Map} of annotations
-	 */
-	public static Map<String, String> getStringPairsToMap(String stringPairs) {
-		Map<String, String> mapValue = new HashMap<>();
+    /**
+     * Extracts annotations from the provided value
+     *
+     * @param stringPairs The deployment request annotations
+     * @return {@link Map} of annotations
+     */
+    public static Map<String, String> getStringPairsToMap(String stringPairs) {
+        Map<String, String> mapValue = new HashMap<>();
 
-		if (StringUtils.hasText(stringPairs)) {
-			/**
-			 * Positive look ahead that into a non capturing group that will skip all commas in quotes.
-			 * Even number quotes will be ignored by the non capturing group.
-			 */
-			String[] pairs = stringPairs.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-			for (String pair : pairs) {
-				String[] splitString = pair.split(":", 2);
-				Assert.isTrue(splitString.length == 2, String.format("Invalid annotation value: %s", pair));
-				String value = splitString[1].trim();
-				mapValue.put(splitString[0].trim(), value);
-			}
-		}
-		return mapValue;
-	}
+        if (StringUtils.hasText(stringPairs)) {
+            /**
+             * Positive look ahead that into a non capturing group that will skip all commas in quotes.
+             * Even number quotes will be ignored by the non capturing group.
+             */
+            String[] pairs = stringPairs.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+            for (String pair : pairs) {
+                String[] splitString = pair.split(":", 2);
+                Assert.isTrue(splitString.length == 2, String.format("Invalid annotation value: %s", pair));
+                String value = splitString[1].trim();
+                mapValue.put(splitString[0].trim(), value);
+            }
+        }
+        return mapValue;
+    }
 
-	public static String getDeploymentPropertyValue(Map<String, String> deploymentProperties, String propertyName) {
-		return getDeploymentPropertyValue(deploymentProperties, propertyName, null);
-	}
+    public static String getDeploymentPropertyValue(Map<String, String> deploymentProperties, String propertyName) {
+        return getDeploymentPropertyValue(deploymentProperties, propertyName, null);
+    }
 
-	public static String getDeploymentPropertyValue(Map<String, String> deploymentProperties, String propertyName,
-			String defaultValue) {
-		RelaxedNames relaxedNames = new RelaxedNames(propertyName);
-		for (Iterator<String> itr = relaxedNames.iterator(); itr.hasNext();) {
-			String relaxedName = itr.next();
-			if (deploymentProperties.containsKey(relaxedName)) {
-				return deploymentProperties.get(relaxedName);
-			}
-		}
-		return defaultValue;
-	}
+    public static String getDeploymentPropertyValue(Map<String, String> deploymentProperties, String propertyName,
+            String defaultValue) {
+        RelaxedNames relaxedNames = new RelaxedNames(propertyName);
+        for (Iterator<String> itr = relaxedNames.iterator(); itr.hasNext(); ) {
+            String relaxedName = itr.next();
+            if (deploymentProperties.containsKey(relaxedName)) {
+                return deploymentProperties.get(relaxedName);
+            }
+        }
+        return defaultValue;
+    }
 }

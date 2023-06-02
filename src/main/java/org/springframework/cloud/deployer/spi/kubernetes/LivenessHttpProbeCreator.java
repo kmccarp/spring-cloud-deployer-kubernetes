@@ -27,7 +27,7 @@ import org.springframework.util.StringUtils;
  */
 class LivenessHttpProbeCreator extends HttpProbeCreator {
     LivenessHttpProbeCreator(KubernetesDeployerProperties kubernetesDeployerProperties,
-                             ContainerConfiguration containerConfiguration) {
+            ContainerConfiguration containerConfiguration) {
         super(kubernetesDeployerProperties, containerConfiguration);
     }
 

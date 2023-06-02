@@ -29,7 +29,7 @@ import io.fabric8.kubernetes.api.model.ProbeBuilder;
  */
 abstract class CommandProbeCreator extends ProbeCreator {
     CommandProbeCreator(KubernetesDeployerProperties kubernetesDeployerProperties,
-                        ContainerConfiguration containerConfiguration) {
+            ContainerConfiguration containerConfiguration) {
         super(kubernetesDeployerProperties, containerConfiguration);
     }
 

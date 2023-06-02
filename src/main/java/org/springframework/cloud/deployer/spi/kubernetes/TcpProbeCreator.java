@@ -27,7 +27,7 @@ import io.fabric8.kubernetes.api.model.ProbeBuilder;
  */
 abstract class TcpProbeCreator extends ProbeCreator {
     TcpProbeCreator(KubernetesDeployerProperties kubernetesDeployerProperties,
-                    ContainerConfiguration containerConfiguration) {
+            ContainerConfiguration containerConfiguration) {
         super(kubernetesDeployerProperties, containerConfiguration);
     }
 

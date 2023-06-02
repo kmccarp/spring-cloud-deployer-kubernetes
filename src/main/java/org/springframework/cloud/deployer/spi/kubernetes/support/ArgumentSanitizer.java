@@ -35,108 +35,108 @@ import org.springframework.util.StringUtils;
  */
 public class ArgumentSanitizer {
 
-	private static final String[] REGEX_PARTS = { "*", "$", "^", "+" };
+    private static final String[] REGEX_PARTS = {"*", "$", "^", "+"};
 
-	private static final String REDACTION_STRING = "******";
+    private static final String REDACTION_STRING = "******";
 
-	private static final String[] KEYS_TO_SANITIZE = { "username", "password", "secret", "key", "token", ".*credentials.*",
-			"vcap_services", "url" };
+    private static final String[] KEYS_TO_SANITIZE = {"username", "password", "secret", "key", "token", ".*credentials.*",
+            "vcap_services", "url"};
 
-	private Pattern[] keysToSanitize;
+    private Pattern[] keysToSanitize;
 
-	public ArgumentSanitizer() {
-		this.keysToSanitize = new Pattern[KEYS_TO_SANITIZE.length];
-		for (int i = 0; i < keysToSanitize.length; i++) {
-			this.keysToSanitize[i] = getPattern(KEYS_TO_SANITIZE[i]);
-		}
-	}
+    public ArgumentSanitizer() {
+        this.keysToSanitize = new Pattern[KEYS_TO_SANITIZE.length];
+        for (int i = 0; i < keysToSanitize.length; i++) {
+            this.keysToSanitize[i] = getPattern(KEYS_TO_SANITIZE[i]);
+        }
+    }
 
-	private Pattern getPattern(String value) {
-		if (isRegex(value)) {
-			return Pattern.compile(value, Pattern.CASE_INSENSITIVE);
-		}
-		return Pattern.compile(".*" + value + "$", Pattern.CASE_INSENSITIVE);
-	}
+    private Pattern getPattern(String value) {
+        if (isRegex(value)) {
+            return Pattern.compile(value, Pattern.CASE_INSENSITIVE);
+        }
+        return Pattern.compile(".*" + value + "$", Pattern.CASE_INSENSITIVE);
+    }
 
-	private boolean isRegex(String value) {
-		for (String part : REGEX_PARTS) {
-			if (value.contains(part)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    private boolean isRegex(String value) {
+        for (String part : REGEX_PARTS) {
+            if (value.contains(part)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Replaces a potential secure value with "******".
-	 *
-	 * @param argument the argument to cleanse.
-	 * @return the argument with a potentially sanitized value
-	 */
-	public String sanitize(String argument) {
-		int indexOfFirstEqual = argument.indexOf("=");
-		if (indexOfFirstEqual == -1) {
-			return argument;
-		}
-		String key = argument.substring(0, indexOfFirstEqual);
-		String value = argument.substring(indexOfFirstEqual + 1);
+    /**
+     * Replaces a potential secure value with "******".
+     *
+     * @param argument the argument to cleanse.
+     * @return the argument with a potentially sanitized value
+     */
+    public String sanitize(String argument) {
+        int indexOfFirstEqual = argument.indexOf("=");
+        if (indexOfFirstEqual == -1) {
+            return argument;
+        }
+        String key = argument.substring(0, indexOfFirstEqual);
+        String value = argument.substring(indexOfFirstEqual + 1);
 
-		value = sanitize(key, value);
+        value = sanitize(key, value);
 
-		return String.format("%s=%s", key, value);
-	}
+        return String.format("%s=%s", key, value);
+    }
 
-	/**
-	 * Replaces a potential secure value with "******".
-	 *
-	 * @param key to check for sensitive words.
-	 * @param value the argument to cleanse.
-	 * @return the argument with a potentially sanitized value
-	 */
-	public String sanitize(String key, String value) {
-		if (StringUtils.hasText(value)) {
-			for (Pattern pattern : this.keysToSanitize) {
-				if (pattern.matcher(key).matches()) {
-					value = REDACTION_STRING;
-					break;
-				}
-			}
-		}
-		return value;
-	}
+    /**
+     * Replaces a potential secure value with "******".
+     *
+     * @param key to check for sensitive words.
+     * @param value the argument to cleanse.
+     * @return the argument with a potentially sanitized value
+     */
+    public String sanitize(String key, String value) {
+        if (StringUtils.hasText(value)) {
+            for (Pattern pattern : this.keysToSanitize) {
+                if (pattern.matcher(key).matches()) {
+                    value = REDACTION_STRING;
+                    break;
+                }
+            }
+        }
+        return value;
+    }
 
-	/**
-	 * For all sensitive properties (e.g. key names containing words like password, secret,
-	 * key, token) replace the value with '*****' string
-	 * @param properties to be sanitized
-	 * @return sanitized properties
-	 */
-	public Map<String, String> sanitizeProperties(Map<String, String> properties) {
-		if (!CollectionUtils.isEmpty(properties)) {
-			final Map<String, String> sanitizedProperties = new LinkedHashMap<>(properties.size());
-			for (Map.Entry<String, String > property : properties.entrySet()) {
-				sanitizedProperties.put(property.getKey(), this.sanitize(property.getKey(), property.getValue()));
-			}
-			return sanitizedProperties;
-		}
-		return properties;
-	}
+    /**
+     * For all sensitive properties (e.g. key names containing words like password, secret,
+     * key, token) replace the value with '*****' string
+     * @param properties to be sanitized
+     * @return sanitized properties
+     */
+    public Map<String, String> sanitizeProperties(Map<String, String> properties) {
+        if (!CollectionUtils.isEmpty(properties)) {
+            final Map<String, String> sanitizedProperties = new LinkedHashMap<>(properties.size());
+            for (Map.Entry<String, String> property : properties.entrySet()) {
+                sanitizedProperties.put(property.getKey(), this.sanitize(property.getKey(), property.getValue()));
+            }
+            return sanitizedProperties;
+        }
+        return properties;
+    }
 
-	/**
-	 * For all sensitive arguments (e.g. key names containing words like password, secret,
-	 * key, token) replace the value with '*****' string
-	 * @param arguments to be sanitized
-	 * @return sanitized arguments
-	 */
-	public List<String> sanitizeArguments(List<String> arguments) {
-		if (!CollectionUtils.isEmpty(arguments)) {
-			final List<String> sanitizedArguments = new ArrayList<>(arguments.size());
-			for (String argument : arguments) {
-				sanitizedArguments.add(this.sanitize(argument));
-			}
-			return sanitizedArguments;
-		}
-		return arguments;
-	}
+    /**
+     * For all sensitive arguments (e.g. key names containing words like password, secret,
+     * key, token) replace the value with '*****' string
+     * @param arguments to be sanitized
+     * @return sanitized arguments
+     */
+    public List<String> sanitizeArguments(List<String> arguments) {
+        if (!CollectionUtils.isEmpty(arguments)) {
+            final List<String> sanitizedArguments = new ArrayList<>(arguments.size());
+            for (String argument : arguments) {
+                sanitizedArguments.add(this.sanitize(argument));
+            }
+            return sanitizedArguments;
+        }
+        return arguments;
+    }
 
 }

@@ -397,11 +397,11 @@ public class KubernetesAppDeployerIntegrationIT extends AbstractAppDeployerInteg
                 .untilAsserted(() -> {
                     assertThat(appDeployer.status(deploymentId).getInstances().values().stream()
                             .map(ais -> ais.getAttributes()).filter(a ->
-                                    StringUtils.hasText(a.get("pod.ip")))
+                            StringUtils.hasText(a.get("pod.ip")))
                             .findFirst()).isPresent();
                     assertThat(appDeployer.status(deploymentId).getInstances().values().stream()
                             .map(ais -> ais.getAttributes()).filter(a ->
-                                    StringUtils.hasText(a.get("actuator.path")))
+                            StringUtils.hasText(a.get("actuator.path")))
                             .map(a -> a.get("actuator.path"))
                             .findFirst().get()).isEqualTo("/actuator");
 

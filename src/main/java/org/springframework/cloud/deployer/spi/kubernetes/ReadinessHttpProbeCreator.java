@@ -27,7 +27,7 @@ import org.springframework.util.StringUtils;
  */
 class ReadinessHttpProbeCreator extends HttpProbeCreator {
     ReadinessHttpProbeCreator(KubernetesDeployerProperties kubernetesDeployerProperties,
-                              ContainerConfiguration containerConfiguration) {
+            ContainerConfiguration containerConfiguration) {
         super(kubernetesDeployerProperties, containerConfiguration);
     }
 

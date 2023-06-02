@@ -26,7 +26,7 @@ import io.fabric8.kubernetes.api.model.Probe;
  */
 class ProbeCreatorFactory {
     static Probe createStartupProbe(ContainerConfiguration containerConfiguration,
-                                    KubernetesDeployerProperties kubernetesDeployerProperties, ProbeType probeType) {
+            KubernetesDeployerProperties kubernetesDeployerProperties, ProbeType probeType) {
         switch (probeType) {
             case HTTP:
                 return new StartupHttpProbeCreator(kubernetesDeployerProperties, containerConfiguration).create();
@@ -40,7 +40,7 @@ class ProbeCreatorFactory {
     }
 
     static Probe createReadinessProbe(ContainerConfiguration containerConfiguration,
-                                      KubernetesDeployerProperties kubernetesDeployerProperties, ProbeType probeType) {
+            KubernetesDeployerProperties kubernetesDeployerProperties, ProbeType probeType) {
         switch (probeType) {
             case HTTP:
                 return new ReadinessHttpProbeCreator(kubernetesDeployerProperties, containerConfiguration).create();
@@ -54,7 +54,7 @@ class ProbeCreatorFactory {
     }
 
     static Probe createLivenessProbe(ContainerConfiguration containerConfiguration,
-                                     KubernetesDeployerProperties kubernetesDeployerProperties, ProbeType probeType) {
+            KubernetesDeployerProperties kubernetesDeployerProperties, ProbeType probeType) {
         switch (probeType) {
             case HTTP:
                 return new LivenessHttpProbeCreator(kubernetesDeployerProperties, containerConfiguration).create();

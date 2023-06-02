@@ -47,7 +47,7 @@ public abstract class HttpProbeCreator extends ProbeCreator {
     static final String DEFAULT_PROBE_SCHEME = "HTTP";
 
     HttpProbeCreator(KubernetesDeployerProperties kubernetesDeployerProperties,
-                     ContainerConfiguration containerConfiguration) {
+            ContainerConfiguration containerConfiguration) {
         super(kubernetesDeployerProperties, containerConfiguration);
     }
 

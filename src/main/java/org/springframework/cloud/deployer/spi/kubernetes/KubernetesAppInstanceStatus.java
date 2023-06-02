@@ -70,7 +70,7 @@ public class KubernetesAppInstanceStatus implements AppInstanceStatus {
     }
 
     public KubernetesAppInstanceStatus(Pod pod, Service service, KubernetesDeployerProperties properties,
-                                       ContainerStatus containerStatus) {
+            ContainerStatus containerStatus) {
         this.pod = pod;
         this.service = service;
         this.properties = properties;

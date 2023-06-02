@@ -26,55 +26,55 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class KubernetesConfigurationPropertiesTests {
 
-	@Test
-	public void testFabric8Namespacing() {
-		KubernetesDeployerProperties kubernetesDeployerProperties = new KubernetesDeployerProperties();
-		kubernetesDeployerProperties.getFabric8().setTrustCerts(true);
-		kubernetesDeployerProperties.getFabric8().setMasterUrl("http://localhost:8090");
-		// this can be set programatically in properties as well as an environment variable
-		// (ie: CI, cmd line, etc) so ensure we have a clean slate here
-		kubernetesDeployerProperties.setNamespace(null);
-		kubernetesDeployerProperties.getFabric8().setNamespace("testing");
+    @Test
+    public void testFabric8Namespacing() {
+        KubernetesDeployerProperties kubernetesDeployerProperties = new KubernetesDeployerProperties();
+        kubernetesDeployerProperties.getFabric8().setTrustCerts(true);
+        kubernetesDeployerProperties.getFabric8().setMasterUrl("http://localhost:8090");
+        // this can be set programatically in properties as well as an environment variable
+        // (ie: CI, cmd line, etc) so ensure we have a clean slate here
+        kubernetesDeployerProperties.setNamespace(null);
+        kubernetesDeployerProperties.getFabric8().setNamespace("testing");
 
-		KubernetesClient kubernetesClient = KubernetesClientFactory
-				.getKubernetesClient(kubernetesDeployerProperties);
+        KubernetesClient kubernetesClient = KubernetesClientFactory
+                .getKubernetesClient(kubernetesDeployerProperties);
 
-		assertThat(kubernetesClient.getMasterUrl().toString()).isEqualTo("http://localhost:8090");
-		assertThat(kubernetesClient.getNamespace()).isEqualTo("testing");
-		assertThat(kubernetesClient.getConfiguration().getMasterUrl()).isEqualTo("http://localhost:8090");
-		assertThat(kubernetesClient.getConfiguration().isTrustCerts()).isTrue();
-	}
+        assertThat(kubernetesClient.getMasterUrl().toString()).isEqualTo("http://localhost:8090");
+        assertThat(kubernetesClient.getNamespace()).isEqualTo("testing");
+        assertThat(kubernetesClient.getConfiguration().getMasterUrl()).isEqualTo("http://localhost:8090");
+        assertThat(kubernetesClient.getConfiguration().isTrustCerts()).isTrue();
+    }
 
-	@Test
-	public void testTopLevelNamespacing() {
-		KubernetesDeployerProperties kubernetesDeployerProperties = new KubernetesDeployerProperties();
-		kubernetesDeployerProperties.getFabric8().setTrustCerts(true);
-		kubernetesDeployerProperties.getFabric8().setMasterUrl("http://localhost:8090");
-		kubernetesDeployerProperties.setNamespace("toplevel");
+    @Test
+    public void testTopLevelNamespacing() {
+        KubernetesDeployerProperties kubernetesDeployerProperties = new KubernetesDeployerProperties();
+        kubernetesDeployerProperties.getFabric8().setTrustCerts(true);
+        kubernetesDeployerProperties.getFabric8().setMasterUrl("http://localhost:8090");
+        kubernetesDeployerProperties.setNamespace("toplevel");
 
-		KubernetesClient kubernetesClient = KubernetesClientFactory
-				.getKubernetesClient(kubernetesDeployerProperties);
+        KubernetesClient kubernetesClient = KubernetesClientFactory
+                .getKubernetesClient(kubernetesDeployerProperties);
 
-		assertThat(kubernetesClient.getMasterUrl().toString()).isEqualTo("http://localhost:8090");
-		assertThat(kubernetesClient.getNamespace()).isEqualTo("toplevel");
-		assertThat(kubernetesClient.getConfiguration().getMasterUrl()).isEqualTo("http://localhost:8090");
-		assertThat(kubernetesClient.getConfiguration().isTrustCerts()).isTrue();
-	}
+        assertThat(kubernetesClient.getMasterUrl().toString()).isEqualTo("http://localhost:8090");
+        assertThat(kubernetesClient.getNamespace()).isEqualTo("toplevel");
+        assertThat(kubernetesClient.getConfiguration().getMasterUrl()).isEqualTo("http://localhost:8090");
+        assertThat(kubernetesClient.getConfiguration().isTrustCerts()).isTrue();
+    }
 
-	@Test
-	public void testTopLevelNamespacingOverride() {
-		KubernetesDeployerProperties kubernetesDeployerProperties = new KubernetesDeployerProperties();
-		kubernetesDeployerProperties.getFabric8().setTrustCerts(true);
-		kubernetesDeployerProperties.getFabric8().setMasterUrl("http://localhost:8090");
-		kubernetesDeployerProperties.getFabric8().setNamespace("toplevel");
-		kubernetesDeployerProperties.setNamespace("toplevel");
+    @Test
+    public void testTopLevelNamespacingOverride() {
+        KubernetesDeployerProperties kubernetesDeployerProperties = new KubernetesDeployerProperties();
+        kubernetesDeployerProperties.getFabric8().setTrustCerts(true);
+        kubernetesDeployerProperties.getFabric8().setMasterUrl("http://localhost:8090");
+        kubernetesDeployerProperties.getFabric8().setNamespace("toplevel");
+        kubernetesDeployerProperties.setNamespace("toplevel");
 
-		KubernetesClient kubernetesClient = KubernetesClientFactory
-				.getKubernetesClient(kubernetesDeployerProperties);
+        KubernetesClient kubernetesClient = KubernetesClientFactory
+                .getKubernetesClient(kubernetesDeployerProperties);
 
-		assertThat(kubernetesClient.getMasterUrl().toString()).isEqualTo("http://localhost:8090");
-		assertThat(kubernetesClient.getNamespace()).isEqualTo("toplevel");
-		assertThat(kubernetesClient.getConfiguration().getMasterUrl()).isEqualTo("http://localhost:8090");
-		assertThat(kubernetesClient.getConfiguration().isTrustCerts()).isTrue();
-	}
+        assertThat(kubernetesClient.getMasterUrl().toString()).isEqualTo("http://localhost:8090");
+        assertThat(kubernetesClient.getNamespace()).isEqualTo("toplevel");
+        assertThat(kubernetesClient.getConfiguration().getMasterUrl()).isEqualTo("http://localhost:8090");
+        assertThat(kubernetesClient.getConfiguration().isTrustCerts()).isTrue();
+    }
 }

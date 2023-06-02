@@ -26,49 +26,49 @@ import org.springframework.cloud.deployer.spi.core.AppDeploymentRequest;
  * @author Chris Schaefer
  */
 public class ContainerConfiguration {
-	private String appId;
-	private Integer externalPort;
-	private boolean isHostNetwork;
-	private Secret probeCredentialsSecret;
-	private AppDeploymentRequest appDeploymentRequest;
+    private String appId;
+    private Integer externalPort;
+    private boolean isHostNetwork;
+    private Secret probeCredentialsSecret;
+    private AppDeploymentRequest appDeploymentRequest;
 
-	public ContainerConfiguration(String appId, AppDeploymentRequest appDeploymentRequest) {
-		this.appId = appId;
-		this.appDeploymentRequest = appDeploymentRequest;
-	}
+    public ContainerConfiguration(String appId, AppDeploymentRequest appDeploymentRequest) {
+        this.appId = appId;
+        this.appDeploymentRequest = appDeploymentRequest;
+    }
 
-	public AppDeploymentRequest getAppDeploymentRequest() {
-		return appDeploymentRequest;
-	}
+    public AppDeploymentRequest getAppDeploymentRequest() {
+        return appDeploymentRequest;
+    }
 
-	public String getAppId() {
-		return appId;
-	}
+    public String getAppId() {
+        return appId;
+    }
 
-	public boolean isHostNetwork() {
-		return isHostNetwork;
-	}
+    public boolean isHostNetwork() {
+        return isHostNetwork;
+    }
 
-	public ContainerConfiguration withHostNetwork(boolean isHostNetwork) {
-		this.isHostNetwork = isHostNetwork;
-		return this;
-	}
+    public ContainerConfiguration withHostNetwork(boolean isHostNetwork) {
+        this.isHostNetwork = isHostNetwork;
+        return this;
+    }
 
-	public ContainerConfiguration withExternalPort(Integer externalPort) {
-		this.externalPort = externalPort;
-		return this;
-	}
+    public ContainerConfiguration withExternalPort(Integer externalPort) {
+        this.externalPort = externalPort;
+        return this;
+    }
 
-	public Integer getExternalPort() {
-		return externalPort;
-	}
+    public Integer getExternalPort() {
+        return externalPort;
+    }
 
-	public ContainerConfiguration withProbeCredentialsSecret(Secret probeCredentialsSecret) {
-		this.probeCredentialsSecret = probeCredentialsSecret;
-		return this;
-	}
+    public ContainerConfiguration withProbeCredentialsSecret(Secret probeCredentialsSecret) {
+        this.probeCredentialsSecret = probeCredentialsSecret;
+        return this;
+    }
 
-	public Secret getProbeCredentialsSecret() {
-		return probeCredentialsSecret;
-	}
+    public Secret getProbeCredentialsSecret() {
+        return probeCredentialsSecret;
+    }
 }

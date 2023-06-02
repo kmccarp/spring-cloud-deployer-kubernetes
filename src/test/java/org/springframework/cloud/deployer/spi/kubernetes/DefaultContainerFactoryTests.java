@@ -284,9 +284,9 @@ public class DefaultContainerFactoryTests {
         kubernetesDeployerProperties = new KubernetesDeployerProperties();
         kubernetesDeployerProperties
                 .setVolumeMounts(Stream.of(
-                                new VolumeMount("/test/hostPath", null, "testhostpath", false, null, null),
-                                new VolumeMount("/test/pvc", null, "testpvc", true, null, null),
-                                new VolumeMount("/test/nfs", null, "testnfs", false, null, null))
+                        new VolumeMount("/test/hostPath", null, "testhostpath", false, null, null),
+                        new VolumeMount("/test/pvc", null, "testpvc", true, null, null),
+                        new VolumeMount("/test/nfs", null, "testnfs", false, null, null))
                         .collect(Collectors.toList()));
         defaultContainerFactory = new DefaultContainerFactory(kubernetesDeployerProperties);
 

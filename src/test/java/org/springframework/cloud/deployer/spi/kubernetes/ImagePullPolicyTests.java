@@ -27,21 +27,21 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ImagePullPolicyTests {
 
-	@Test
-	public void relaxedValueOf_ignoresCase() throws Exception {
-		ImagePullPolicy pullPolicy = ImagePullPolicy.relaxedValueOf("aLWays");
-		assertThat(pullPolicy).isEqualTo(ImagePullPolicy.Always);
-	}
+    @Test
+    public void relaxedValueOf_ignoresCase() throws Exception {
+        ImagePullPolicy pullPolicy = ImagePullPolicy.relaxedValueOf("aLWays");
+        assertThat(pullPolicy).isEqualTo(ImagePullPolicy.Always);
+    }
 
-	@Test
-	public void relaxedValueOf_parsesValueWithDashesInsteadOfCamelCase() throws Exception {
-		ImagePullPolicy pullPolicy = ImagePullPolicy.relaxedValueOf("if-not-present");
-		assertThat(pullPolicy).isEqualTo(ImagePullPolicy.IfNotPresent);
-	}
+    @Test
+    public void relaxedValueOf_parsesValueWithDashesInsteadOfCamelCase() throws Exception {
+        ImagePullPolicy pullPolicy = ImagePullPolicy.relaxedValueOf("if-not-present");
+        assertThat(pullPolicy).isEqualTo(ImagePullPolicy.IfNotPresent);
+    }
 
-	@Test
-	public void relaxedValueOf_returnsNullIfValueNotParseable() throws Exception {
-		ImagePullPolicy pullPolicy = ImagePullPolicy.relaxedValueOf("not-a-real-policy");
-		assertThat(pullPolicy).isNull();
-	}
+    @Test
+    public void relaxedValueOf_returnsNullIfValueNotParseable() throws Exception {
+        ImagePullPolicy pullPolicy = ImagePullPolicy.relaxedValueOf("not-a-real-policy");
+        assertThat(pullPolicy).isNull();
+    }
 }

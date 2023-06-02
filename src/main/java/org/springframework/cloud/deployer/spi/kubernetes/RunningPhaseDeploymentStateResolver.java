@@ -24,5 +24,5 @@ import org.springframework.cloud.deployer.spi.app.DeploymentState;
  * @author David Turanski
  **/
 public interface RunningPhaseDeploymentStateResolver {
-	DeploymentState resolve(ContainerStatus containerStatus);
+    DeploymentState resolve(ContainerStatus containerStatus);
 }

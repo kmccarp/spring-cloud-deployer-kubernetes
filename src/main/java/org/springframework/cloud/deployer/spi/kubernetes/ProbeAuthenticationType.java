@@ -23,5 +23,5 @@ package org.springframework.cloud.deployer.spi.kubernetes;
  * @author Chris Schaefer
  */
 public enum ProbeAuthenticationType {
-	Basic
+    Basic
 }

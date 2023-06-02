@@ -42,50 +42,50 @@ import org.springframework.web.client.RestTemplate;
 @EnableConfigurationProperties({KubernetesDeployerProperties.class, KubernetesTaskLauncherProperties.class})
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
 public class KubernetesAutoConfiguration {
-	
-	@Autowired
-	private KubernetesDeployerProperties deployerProperties;
 
-	@Autowired
-	private KubernetesTaskLauncherProperties taskLauncherProperties;
+    @Autowired
+    private KubernetesDeployerProperties deployerProperties;
 
-	@Bean
-	@ConditionalOnMissingBean(AppDeployer.class)
-	public AppDeployer appDeployer(KubernetesClient kubernetesClient,
-	                               ContainerFactory containerFactory) {
-		return new KubernetesAppDeployer(deployerProperties, kubernetesClient, containerFactory);
-	}
+    @Autowired
+    private KubernetesTaskLauncherProperties taskLauncherProperties;
 
-	@Bean
-	@ConditionalOnMissingBean(TaskLauncher.class)
-	public TaskLauncher taskDeployer(KubernetesClient kubernetesClient,
-	                                 ContainerFactory containerFactory) {
-		return new KubernetesTaskLauncher(deployerProperties, taskLauncherProperties, kubernetesClient, containerFactory);
-	}
+    @Bean
+    @ConditionalOnMissingBean(AppDeployer.class)
+    public AppDeployer appDeployer(KubernetesClient kubernetesClient,
+            ContainerFactory containerFactory) {
+        return new KubernetesAppDeployer(deployerProperties, kubernetesClient, containerFactory);
+    }
 
-	@Bean
-	@ConditionalOnMissingBean(KubernetesClient.class)
-	public KubernetesClient kubernetesClient() {
-		return KubernetesClientFactory.getKubernetesClient(this.deployerProperties);
-	}
+    @Bean
+    @ConditionalOnMissingBean(TaskLauncher.class)
+    public TaskLauncher taskDeployer(KubernetesClient kubernetesClient,
+            ContainerFactory containerFactory) {
+        return new KubernetesTaskLauncher(deployerProperties, taskLauncherProperties, kubernetesClient, containerFactory);
+    }
 
-	@Bean
-	public ContainerFactory containerFactory() {
-		return new DefaultContainerFactory(deployerProperties);
-	}
+    @Bean
+    @ConditionalOnMissingBean(KubernetesClient.class)
+    public KubernetesClient kubernetesClient() {
+        return KubernetesClientFactory.getKubernetesClient(this.deployerProperties);
+    }
 
-	@Bean
-	@ConditionalOnMissingBean(ActuatorOperations.class)
-	ActuatorOperations actuatorOperations(RestTemplate actuatorRestTemplate, AppDeployer appDeployer,
-			KubernetesDeployerProperties properties) {
-		return new KubernetesActuatorTemplate(actuatorRestTemplate, appDeployer, properties.getAppAdmin());
-	}
+    @Bean
+    public ContainerFactory containerFactory() {
+        return new DefaultContainerFactory(deployerProperties);
+    }
 
-	@Bean
-	@ConditionalOnMissingBean
-	RestTemplate actuatorRestTemplate() {
-		//TODO: Configure security
-		return new RestTemplate();
-	}
+    @Bean
+    @ConditionalOnMissingBean(ActuatorOperations.class)
+    ActuatorOperations actuatorOperations(RestTemplate actuatorRestTemplate, AppDeployer appDeployer,
+            KubernetesDeployerProperties properties) {
+        return new KubernetesActuatorTemplate(actuatorRestTemplate, appDeployer, properties.getAppAdmin());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    RestTemplate actuatorRestTemplate() {
+        //TODO: Configure security
+        return new RestTemplate();
+    }
 
 }

@@ -30,42 +30,42 @@ import org.springframework.boot.context.properties.source.MapConfigurationProper
  * @author Chris Schaefer
  */
 public enum EntryPointStyle {
-	/**
-	 * Application properties will be provided to the container as command line arguments.
-	 */
-	exec,
+    /**
+     * Application properties will be provided to the container as command line arguments.
+     */
+    exec,
 
-	/**
-	 * Application properties will be provided to the container as environment variables.
-	 */
-	shell,
+    /**
+     * Application properties will be provided to the container as environment variables.
+     */
+    shell,
 
-	/**
-	 * Application properties will be provided to the container as JSON in the
-	 * SPRING_APPLICATION_JSON environment variable. Command line arguments will be passed
-	 * as-is.
-	 */
-	boot;
+    /**
+     * Application properties will be provided to the container as JSON in the
+     * SPRING_APPLICATION_JSON environment variable. Command line arguments will be passed
+     * as-is.
+     */
+    boot;
 
-	/**
-	 * Converts the string of the provided entry point style to the appropriate enum value.
-	 * Defaults to {@link EntryPointStyle#exec} if no matching
-	 * entry point style is found.
-	 *
-	 * @param entryPointStyle the entry point style to use
-	 * @return the converted {@link EntryPointStyle}
-	 */
-	public static EntryPointStyle relaxedValueOf(String entryPointStyle) {
-		// 'value' is just a dummy key as you can't bind a single value to an enum
-		Map<String, String> props = new HashMap<>();
-		props.put("value", entryPointStyle);
-		MapConfigurationPropertySource source = new MapConfigurationPropertySource(props);
-		Binder binder = new Binder(source);
-		try {
-			return binder.bind("value", Bindable.of(EntryPointStyle.class)).get();
-		} catch (Exception e) {
-			// error means we couldn't bind, caller seem to handle null
-		}
-		return exec;
-	}
+    /**
+     * Converts the string of the provided entry point style to the appropriate enum value.
+     * Defaults to {@link EntryPointStyle#exec} if no matching
+     * entry point style is found.
+     *
+     * @param entryPointStyle the entry point style to use
+     * @return the converted {@link EntryPointStyle}
+     */
+    public static EntryPointStyle relaxedValueOf(String entryPointStyle) {
+        // 'value' is just a dummy key as you can't bind a single value to an enum
+        Map<String, String> props = new HashMap<>();
+        props.put("value", entryPointStyle);
+        MapConfigurationPropertySource source = new MapConfigurationPropertySource(props);
+        Binder binder = new Binder(source);
+        try {
+            return binder.bind("value", Bindable.of(EntryPointStyle.class)).get();
+        } catch (Exception e) {
+            // error means we couldn't bind, caller seem to handle null
+        }
+        return exec;
+    }
 }

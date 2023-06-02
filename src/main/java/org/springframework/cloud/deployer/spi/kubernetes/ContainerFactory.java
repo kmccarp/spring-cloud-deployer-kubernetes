@@ -27,11 +27,11 @@ import io.fabric8.kubernetes.api.model.Container;
  * @author Chris Schaefer
  */
 public interface ContainerFactory {
-	/**
-	 * Creates a {@link Container} using configuration from the provided {@link ContainerConfiguration}.
-	 *
-	 * @param containerConfiguration the {@link ContainerConfiguration}
-	 * @return a {@link Container}
-	 */
-	Container create(ContainerConfiguration containerConfiguration);
+    /**
+     * Creates a {@link Container} using configuration from the provided {@link ContainerConfiguration}.
+     *
+     * @param containerConfiguration the {@link ContainerConfiguration}
+     * @return a {@link Container}
+     */
+    Container create(ContainerConfiguration containerConfiguration);
 }

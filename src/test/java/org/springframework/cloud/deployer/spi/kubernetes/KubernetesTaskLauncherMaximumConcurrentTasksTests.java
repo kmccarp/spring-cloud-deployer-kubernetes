@@ -48,71 +48,71 @@ import static org.mockito.Mockito.when;
 /**
  * @author David Turanski
  **/
-@SpringBootTest(classes = { KubernetesAutoConfiguration.class }, properties = {
-		"spring.cloud.deployer.kubernetes.maximum-concurrent-tasks=10" })
+@SpringBootTest(classes = {KubernetesAutoConfiguration.class}, properties = {
+        "spring.cloud.deployer.kubernetes.maximum-concurrent-tasks=10"})
 @ExtendWith(SpringExtension.class)
 public class KubernetesTaskLauncherMaximumConcurrentTasksTests {
 
-	@Autowired
-	private TaskLauncher taskLauncher;
+    @Autowired
+    private TaskLauncher taskLauncher;
 
-	@MockBean
-	private KubernetesClient client;
+    @MockBean
+    private KubernetesClient client;
 
-	private List<Pod> pods;
+    private List<Pod> pods;
 
-	@Test
-	public void getMaximumConcurrentTasksExceeded() {
-		assertThat(taskLauncher).isNotNull();
+    @Test
+    public void getMaximumConcurrentTasksExceeded() {
+        assertThat(taskLauncher).isNotNull();
 
-		pods = stubForRunningPods(10);
+        pods = stubForRunningPods(10);
 
-		MixedOperation podsOperation = mock(MixedOperation.class);
-		FilterWatchListDeletable filterWatchListDeletable = mock(FilterWatchListDeletable.class);
-		when(podsOperation.withLabel("task-name")).thenReturn(filterWatchListDeletable);
-		when(filterWatchListDeletable.list()).thenAnswer(invocation -> {
-			PodList podList = new PodList();
-			List<Pod> items = new ArrayList<>();
-			podList.setItems(pods);
-			return podList;
-		});
+        MixedOperation podsOperation = mock(MixedOperation.class);
+        FilterWatchListDeletable filterWatchListDeletable = mock(FilterWatchListDeletable.class);
+        when(podsOperation.withLabel("task-name")).thenReturn(filterWatchListDeletable);
+        when(filterWatchListDeletable.list()).thenAnswer(invocation -> {
+            PodList podList = new PodList();
+            List<Pod> items = new ArrayList<>();
+            podList.setItems(pods);
+            return podList;
+        });
 
-		when(client.pods()).thenReturn(podsOperation);
+        when(client.pods()).thenReturn(podsOperation);
 
-		when(podsOperation.withName(anyString())).thenAnswer(invocation -> {
-			Pod p = pods.stream().filter(pod -> pod.getMetadata().getName().equals(invocation.getArgument(0)))
-					.findFirst().orElse(null);
-			PodResource podResource = mock(PodResource.class);
-			when(podResource.get()).thenReturn(p);
-			return podResource;
-		});
+        when(podsOperation.withName(anyString())).thenAnswer(invocation -> {
+            Pod p = pods.stream().filter(pod -> pod.getMetadata().getName().equals(invocation.getArgument(0)))
+                    .findFirst().orElse(null);
+            PodResource podResource = mock(PodResource.class);
+            when(podResource.get()).thenReturn(p);
+            return podResource;
+        });
 
-		int executionCount = taskLauncher.getRunningTaskExecutionCount();
+        int executionCount = taskLauncher.getRunningTaskExecutionCount();
 
-		assertThat(executionCount).isEqualTo(10);
+        assertThat(executionCount).isEqualTo(10);
 
-		assertThat(taskLauncher.getMaximumConcurrentTasks()).isEqualTo(taskLauncher.getRunningTaskExecutionCount());
+        assertThat(taskLauncher.getMaximumConcurrentTasks()).isEqualTo(taskLauncher.getRunningTaskExecutionCount());
 
-		AppDefinition appDefinition = new AppDefinition("task", Collections.emptyMap());
-		AppDeploymentRequest request = new AppDeploymentRequest(appDefinition, mock(Resource.class),
-				Collections.emptyMap());
+        AppDefinition appDefinition = new AppDefinition("task", Collections.emptyMap());
+        AppDeploymentRequest request = new AppDeploymentRequest(appDefinition, mock(Resource.class),
+                Collections.emptyMap());
 
-		assertThatThrownBy(() -> {
-			taskLauncher.launch(request);
-		}).isInstanceOf(IllegalStateException.class).hasMessageContaining(
-				"Cannot launch task task. The maximum concurrent task executions is at its limit [10].");
+        assertThatThrownBy(() -> {
+            taskLauncher.launch(request);
+        }).isInstanceOf(IllegalStateException.class).hasMessageContaining(
+                "Cannot launch task task. The maximum concurrent task executions is at its limit [10].");
 
-	}
+    }
 
-	private List<Pod> stubForRunningPods(int numTasks) {
-		List<Pod> items = new ArrayList<>();
-		for (int i = 0; i < numTasks; i++) {
-			items.add(new PodBuilder().withNewMetadata()
-					.withName("task-" + i).endMetadata()
-					.withNewStatus()
-					.withPhase("Running")
-					.endStatus().build());
-		}
-		return items;
-	}
+    private List<Pod> stubForRunningPods(int numTasks) {
+        List<Pod> items = new ArrayList<>();
+        for (int i = 0; i < numTasks; i++) {
+            items.add(new PodBuilder().withNewMetadata()
+                    .withName("task-" + i).endMetadata()
+                    .withNewStatus()
+                    .withPhase("Running")
+                    .endStatus().build());
+        }
+        return items;
+    }
 }

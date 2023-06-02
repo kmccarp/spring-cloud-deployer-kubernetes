@@ -217,7 +217,7 @@ public class DefaultContainerFactory implements ContainerFactory {
     }
 
     private void configureReadinessProbe(ContainerConfiguration containerConfiguration,
-                                         ContainerBuilder containerBuilder, Set<Integer> ports) {
+            ContainerBuilder containerBuilder, Set<Integer> ports) {
         Probe readinessProbe = ProbeCreatorFactory.createReadinessProbe(containerConfiguration, properties,
                 getProbeType(containerConfiguration));
 
@@ -241,7 +241,7 @@ public class DefaultContainerFactory implements ContainerFactory {
     }
 
     private void configureStartupProbe(ContainerConfiguration containerConfiguration,
-                                       ContainerBuilder containerBuilder, Set<Integer> ports) {
+            ContainerBuilder containerBuilder, Set<Integer> ports) {
         Probe startupProbe = ProbeCreatorFactory.createStartupProbe(containerConfiguration, properties,
                 getProbeType(containerConfiguration));
 
@@ -265,7 +265,7 @@ public class DefaultContainerFactory implements ContainerFactory {
     }
 
     private void configureLivenessProbe(ContainerConfiguration containerConfiguration,
-                                        ContainerBuilder containerBuilder, Set<Integer> ports) {
+            ContainerBuilder containerBuilder, Set<Integer> ports) {
         Probe livenessProbe = ProbeCreatorFactory.createLivenessProbe(containerConfiguration, properties,
                 getProbeType(containerConfiguration));
 
@@ -319,7 +319,7 @@ public class DefaultContainerFactory implements ContainerFactory {
                 logger.warn(
                         String.format(
                                 "Excluding request property [--%s=%s] as a command arg. Existing command line argument takes precedence."
-                                , entry.getKey(), entry.getValue()));
+                        , entry.getKey(), entry.getValue()));
             } else {
                 cmdArgs.add(String.format("--%s=%s", entry.getKey(), entry.getValue()));
             }

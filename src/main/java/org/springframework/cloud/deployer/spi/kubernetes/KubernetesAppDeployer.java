@@ -93,7 +93,7 @@ public class KubernetesAppDeployer extends AbstractKubernetesDeployer implements
 
     @Autowired
     public KubernetesAppDeployer(KubernetesDeployerProperties properties, KubernetesClient client,
-                                 ContainerFactory containerFactory) {
+            ContainerFactory containerFactory) {
         this.properties = properties;
         this.client = client;
         this.containerFactory = containerFactory;
@@ -106,7 +106,7 @@ public class KubernetesAppDeployer extends AbstractKubernetesDeployer implements
         String appId = createDeploymentId(request);
         if (logger.isDebugEnabled()) {
             ArgumentSanitizer sanitizer = new ArgumentSanitizer();
-            Map<String,String> sanitized = sanitizer.sanitizeProperties(request.getDeploymentProperties());
+            Map<String, String> sanitized = sanitizer.sanitizeProperties(request.getDeploymentProperties());
             List<String> sanitizedCommandlineArguments = sanitizer.sanitizeArguments(request.getCommandlineArguments());
             logger.debug(String.format("Deploying app: %s, request: commandlineArguments=%s, deploymentProperties=%s, definition=%s, resource=%s", appId, sanitizedCommandlineArguments, sanitized, request.getDefinition(), request.getResource()));
         }
@@ -488,7 +488,7 @@ public class KubernetesAppDeployer extends AbstractKubernetesDeployer implements
      * <p>
      * Since 1.8 the annotation method has been removed, and the initContainer API is supported since 1.6
      *
-	 * @param podSpec the current pod spec the container is being added to
+     * @param podSpec the current pod spec the container is being added to
      * @param imageName the image name to use in the init container
      * @return a container definition with the  aforementioned configuration
      */
@@ -498,7 +498,7 @@ public class KubernetesAppDeployer extends AbstractKubernetesDeployer implements
         String commandString = String
                 .format("%s && %s", setIndexProperty("INSTANCE_INDEX"), setIndexProperty("spring.cloud.stream.instanceIndex"));
 
-		command.add("sh");
+        command.add("sh");
         command.add("-c");
         command.add(commandString);
 
@@ -508,19 +508,19 @@ public class KubernetesAppDeployer extends AbstractKubernetesDeployer implements
                 .withCommand(command)
                 .withVolumeMounts(new VolumeMountBuilder().withName("config").withMountPath("/config").build());
 
-		if (!CollectionUtils.isEmpty(podSpec.getContainers())) {
-			SecurityContext securityContext = podSpec.getContainers().get(0).getSecurityContext();
-			if (securityContext != null) {
-				containerBuilder.withSecurityContext(securityContext);
-			}
-		}
+        if (!CollectionUtils.isEmpty(podSpec.getContainers())) {
+            SecurityContext securityContext = podSpec.getContainers().get(0).getSecurityContext();
+            if (securityContext != null) {
+                containerBuilder.withSecurityContext(securityContext);
+            }
+        }
 
-		return containerBuilder.build();
+        return containerBuilder.build();
     }
 
     private String setIndexProperty(String name) {
         return String
-                .format("echo %s=\"$(expr $HOSTNAME | grep -o \"[[:digit:]]*$\")\" >> "+
+                .format("echo %s=\"$(expr $HOSTNAME | grep -o \"[[:digit:]]*$\")\" >> " +
                         "/config/application.properties", name);
     }
 

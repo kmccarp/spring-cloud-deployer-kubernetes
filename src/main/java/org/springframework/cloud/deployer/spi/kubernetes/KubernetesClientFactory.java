@@ -28,14 +28,14 @@ import io.fabric8.kubernetes.client.KubernetesClient;
  */
 public class KubernetesClientFactory {
 
-	public static KubernetesClient getKubernetesClient(KubernetesDeployerProperties kubernetesDeployerProperties) {
-		Config config = kubernetesDeployerProperties.getFabric8();
+    public static KubernetesClient getKubernetesClient(KubernetesDeployerProperties kubernetesDeployerProperties) {
+        Config config = kubernetesDeployerProperties.getFabric8();
 
-		// use any fabric8 auto-detected properties, only set namespace from deployer properties if not null
-		if (kubernetesDeployerProperties.getNamespace() != null) {
-			config.setNamespace(kubernetesDeployerProperties.getNamespace());
-		}
+        // use any fabric8 auto-detected properties, only set namespace from deployer properties if not null
+        if (kubernetesDeployerProperties.getNamespace() != null) {
+            config.setNamespace(kubernetesDeployerProperties.getNamespace());
+        }
 
-		return new DefaultKubernetesClient(config);
-	}
+        return new DefaultKubernetesClient(config);
+    }
 }

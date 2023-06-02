@@ -52,101 +52,101 @@ import static org.assertj.core.api.Assertions.entry;
  * @author Glenn Renfro
  */
 @SpringBootTest(classes = {KubernetesAutoConfiguration.class}, properties = {
-		"spring.cloud.deployer.kubernetes.namespace=default"
+        "spring.cloud.deployer.kubernetes.namespace=default"
 })
 @ExtendWith(OutputCaptureExtension.class)
 public class KubernetesTaskLauncherIntegrationIT extends AbstractKubernetesTaskLauncherIntegrationTests {
 
-	@Test
-	void taskLaunchedWithJobPodAnnotations(TestInfo testInfo) {
-		logTestInfo(testInfo);
-		launchTaskPodAndValidateCreatedPodWithCleanup(
-				Collections.singletonMap("spring.cloud.deployer.kubernetes.jobAnnotations", "key1:val1,key2:val2,key3:val31:val32"),
-				(pod) -> {
-					assertThat(pod.getSpec().getContainers()).isNotEmpty()
-							.element(0).extracting(Container::getPorts).asList().isEmpty();
-					assertThat(pod.getMetadata().getAnnotations()).isNotEmpty()
-							.contains(entry("key1", "val1"), entry("key2", "val2"), entry("key3", "val31:val32"));
-				});
-	}
+    @Test
+    void taskLaunchedWithJobPodAnnotations(TestInfo testInfo) {
+        logTestInfo(testInfo);
+        launchTaskPodAndValidateCreatedPodWithCleanup(
+                Collections.singletonMap("spring.cloud.deployer.kubernetes.jobAnnotations", "key1:val1,key2:val2,key3:val31:val32"),
+                (pod) -> {
+                    assertThat(pod.getSpec().getContainers()).isNotEmpty()
+                            .element(0).extracting(Container::getPorts).asList().isEmpty();
+                    assertThat(pod.getMetadata().getAnnotations()).isNotEmpty()
+                            .contains(entry("key1", "val1"), entry("key2", "val2"), entry("key3", "val31:val32"));
+                });
+    }
 
-	@Test
-	void taskLaunchedWithDeploymentLabels(TestInfo testInfo) {
-		logTestInfo(testInfo);
-		launchTaskPodAndValidateCreatedPodWithCleanup(
-				Collections.singletonMap("spring.cloud.deployer.kubernetes.deploymentLabels", "label1:value1,label2:value2"),
-				(pod) -> {
-					assertThat(pod.getSpec().getContainers()).isNotEmpty()
-							.element(0).extracting(Container::getPorts).asList().isEmpty();
-					assertThat(pod.getMetadata().getLabels()).isNotEmpty()
-							.contains(entry("label1", "value1"), entry("label2", "value2"));
-				});
-	}
+    @Test
+    void taskLaunchedWithDeploymentLabels(TestInfo testInfo) {
+        logTestInfo(testInfo);
+        launchTaskPodAndValidateCreatedPodWithCleanup(
+                Collections.singletonMap("spring.cloud.deployer.kubernetes.deploymentLabels", "label1:value1,label2:value2"),
+                (pod) -> {
+                    assertThat(pod.getSpec().getContainers()).isNotEmpty()
+                            .element(0).extracting(Container::getPorts).asList().isEmpty();
+                    assertThat(pod.getMetadata().getLabels()).isNotEmpty()
+                            .contains(entry("label1", "value1"), entry("label2", "value2"));
+                });
+    }
 
-	@Test
-	void tasksLaunchedWithAdditionalContainers(TestInfo testInfo) {
-		logTestInfo(testInfo);
-		launchTaskPodAndValidateCreatedPodWithCleanup(
-				Collections.singletonMap("spring.cloud.deployer.kubernetes.additionalContainers",
-						"[{name: 'test', image: 'busybox:latest', command: ['sh', '-c', 'echo hello']}]"),
-				(pod) -> assertThat(pod.getSpec().getContainers()).hasSize(2)
-						.filteredOn("name", "test").singleElement()
-						.hasFieldOrPropertyWithValue("image", "busybox:latest")
-						.hasFieldOrPropertyWithValue("command", Arrays.asList("sh", "-c", "echo hello")));
-	}
+    @Test
+    void tasksLaunchedWithAdditionalContainers(TestInfo testInfo) {
+        logTestInfo(testInfo);
+        launchTaskPodAndValidateCreatedPodWithCleanup(
+                Collections.singletonMap("spring.cloud.deployer.kubernetes.additionalContainers",
+                        "[{name: 'test', image: 'busybox:latest', command: ['sh', '-c', 'echo hello']}]"),
+                (pod) -> assertThat(pod.getSpec().getContainers()).hasSize(2)
+                        .filteredOn("name", "test").singleElement()
+                        .hasFieldOrPropertyWithValue("image", "busybox:latest")
+                        .hasFieldOrPropertyWithValue("command", Arrays.asList("sh", "-c", "echo hello")));
+    }
 
-	private void launchTaskPodAndValidateCreatedPodWithCleanup(Map<String, String> deploymentProps, Consumer<Pod> assertingConsumer) {
-		String taskName = randomName();
-		AppDefinition definition = new AppDefinition(taskName, null);
-		Resource resource = testApplication();
-		AppDeploymentRequest request = new AppDeploymentRequest(definition, resource, deploymentProps);
+    private void launchTaskPodAndValidateCreatedPodWithCleanup(Map<String, String> deploymentProps, Consumer<Pod> assertingConsumer) {
+        String taskName = randomName();
+        AppDefinition definition = new AppDefinition(taskName, null);
+        Resource resource = testApplication();
+        AppDeploymentRequest request = new AppDeploymentRequest(definition, resource, deploymentProps);
 
-		log.info("Launching {}...", taskName);
-		String launchId = taskLauncher().launch(request);
-		awaitWithPollAndTimeout(deploymentTimeout())
-				.untilAsserted(() -> assertThat(taskLauncher().status(launchId).getState()).isEqualTo(LaunchState.running));
+        log.info("Launching {}...", taskName);
+        String launchId = taskLauncher().launch(request);
+        awaitWithPollAndTimeout(deploymentTimeout())
+                .untilAsserted(() -> assertThat(taskLauncher().status(launchId).getState()).isEqualTo(LaunchState.running));
 
-		log.info("Checking task Pod for {}...", taskName);
-		List<Pod> pods = getPodsForTask(taskName);
-		assertThat(pods).hasSize(1);
-		assertThat(pods).singleElement().satisfies(assertingConsumer);
+        log.info("Checking task Pod for {}...", taskName);
+        List<Pod> pods = getPodsForTask(taskName);
+        assertThat(pods).hasSize(1);
+        assertThat(pods).singleElement().satisfies(assertingConsumer);
 
-		log.info("Destroying {}...", taskName);
-		taskLauncher().destroy(taskName);
-		awaitWithPollAndTimeout(undeploymentTimeout())
-				.untilAsserted(() -> assertThat(taskLauncher().status(launchId).getState()).isEqualTo(LaunchState.unknown));
-	}
+        log.info("Destroying {}...", taskName);
+        taskLauncher().destroy(taskName);
+        awaitWithPollAndTimeout(undeploymentTimeout())
+                .untilAsserted(() -> assertThat(taskLauncher().status(launchId).getState()).isEqualTo(LaunchState.unknown));
+    }
 
-	@Test
-	void cleanupDeletesTaskPod(TestInfo testInfo) {
-		logTestInfo(testInfo);
-		AppDefinition definition = new AppDefinition(randomName(), null);
-		Resource resource = testApplication();
-		AppDeploymentRequest request = new AppDeploymentRequest(definition, resource, null);
-		String taskName = request.getDefinition().getName();
+    @Test
+    void cleanupDeletesTaskPod(TestInfo testInfo) {
+        logTestInfo(testInfo);
+        AppDefinition definition = new AppDefinition(randomName(), null);
+        Resource resource = testApplication();
+        AppDeploymentRequest request = new AppDeploymentRequest(definition, resource, null);
+        String taskName = request.getDefinition().getName();
 
-		log.info("Launching {}...", taskName);
-		String launchId = taskLauncher().launch(request);
-		awaitWithPollAndTimeout(deploymentTimeout())
-				.untilAsserted(() -> assertThat(taskLauncher().status(launchId).getState()).isEqualTo(LaunchState.running));
+        log.info("Launching {}...", taskName);
+        String launchId = taskLauncher().launch(request);
+        awaitWithPollAndTimeout(deploymentTimeout())
+                .untilAsserted(() -> assertThat(taskLauncher().status(launchId).getState()).isEqualTo(LaunchState.running));
 
-		List<Pod> pods = getPodsForTask(taskName);
-		assertThat(pods).hasSize(1);
-		assertThat(PodStatusUtil.isRunning(pods.get(0))).isTrue();
+        List<Pod> pods = getPodsForTask(taskName);
+        assertThat(pods).hasSize(1);
+        assertThat(PodStatusUtil.isRunning(pods.get(0))).isTrue();
 
-		log.info("Cleaning up {}...", taskName);
-		taskLauncher().cleanup(launchId);
-		awaitWithPollAndTimeout(undeploymentTimeout())
-				.untilAsserted(() -> assertThat(taskLauncher().status(launchId).getState()).isEqualTo(LaunchState.unknown));
+        log.info("Cleaning up {}...", taskName);
+        taskLauncher().cleanup(launchId);
+        awaitWithPollAndTimeout(undeploymentTimeout())
+                .untilAsserted(() -> assertThat(taskLauncher().status(launchId).getState()).isEqualTo(LaunchState.unknown));
 
-		pods = getPodsForTask(taskName);
-		assertThat(pods).isEmpty();
-	}
+        pods = getPodsForTask(taskName);
+        assertThat(pods).isEmpty();
+    }
 
-	@Test
-	void cleanupForNonExistentTaskThrowsException(TestInfo testInfo, CapturedOutput taskOutput) {
-		logTestInfo(testInfo);
-		taskLauncher().cleanup("foo");
-		assertThat(taskOutput.getAll()).contains("Cannot delete pod for task \"foo\" (reason: pod does not exist)");
-	}
+    @Test
+    void cleanupForNonExistentTaskThrowsException(TestInfo testInfo, CapturedOutput taskOutput) {
+        logTestInfo(testInfo);
+        taskLauncher().cleanup("foo");
+        assertThat(taskOutput.getAll()).contains("Cannot delete pod for task \"foo\" (reason: pod does not exist)");
+    }
 }

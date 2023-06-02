@@ -26,61 +26,61 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Deprecated
 @ConfigurationProperties(prefix = KubernetesSchedulerProperties.KUBERNETES_SCHEDULER_PROPERTIES_PREFIX)
 public class KubernetesSchedulerProperties extends KubernetesDeployerProperties {
-	/**
-	 * Namespace to use for Kubernetes Scheduler properties.
-	 */
-	public static final String KUBERNETES_SCHEDULER_PROPERTIES_PREFIX = "spring.cloud.scheduler.kubernetes";
+    /**
+     * Namespace to use for Kubernetes Scheduler properties.
+     */
+    public static final String KUBERNETES_SCHEDULER_PROPERTIES_PREFIX = "spring.cloud.scheduler.kubernetes";
 
-	/**
-	 * The {@link RestartPolicy} to use. Defaults to {@link RestartPolicy#Never}.
-	 */
-	private RestartPolicy restartPolicy = RestartPolicy.Never;
+    /**
+     * The {@link RestartPolicy} to use. Defaults to {@link RestartPolicy#Never}.
+     */
+    private RestartPolicy restartPolicy = RestartPolicy.Never;
 
-	/**
-	 * The default service account name to use for tasks.
-	 */
-	protected static final String DEFAULT_TASK_SERVICE_ACCOUNT_NAME = "default";
+    /**
+     * The default service account name to use for tasks.
+     */
+    protected static final String DEFAULT_TASK_SERVICE_ACCOUNT_NAME = "default";
 
-	/**
-	 * Service account name to use for tasks, defaults to:
-	 * {@link KubernetesSchedulerProperties#DEFAULT_TASK_SERVICE_ACCOUNT_NAME}
-	 */
-	private String taskServiceAccountName = DEFAULT_TASK_SERVICE_ACCOUNT_NAME;
+    /**
+     * Service account name to use for tasks, defaults to:
+     * {@link KubernetesSchedulerProperties#DEFAULT_TASK_SERVICE_ACCOUNT_NAME}
+     */
+    private String taskServiceAccountName = DEFAULT_TASK_SERVICE_ACCOUNT_NAME;
 
-	/**
-	 * Obtains the {@link RestartPolicy} to use. Defaults to
-	 * {@link KubernetesSchedulerProperties#restartPolicy}.
-	 *
-	 * @return the {@link RestartPolicy} to use
-	 */
-	public RestartPolicy getRestartPolicy() {
-		return restartPolicy;
-	}
+    /**
+     * Obtains the {@link RestartPolicy} to use. Defaults to
+     * {@link KubernetesSchedulerProperties#restartPolicy}.
+     *
+     * @return the {@link RestartPolicy} to use
+     */
+    public RestartPolicy getRestartPolicy() {
+        return restartPolicy;
+    }
 
-	/**
-	 * Sets the {@link RestartPolicy} to use.
-	 *
-	 * @param restartPolicy the {@link RestartPolicy} to use
-	 */
-	public void setRestartPolicy(RestartPolicy restartPolicy) {
-		this.restartPolicy = restartPolicy;
-	}
+    /**
+     * Sets the {@link RestartPolicy} to use.
+     *
+     * @param restartPolicy the {@link RestartPolicy} to use
+     */
+    public void setRestartPolicy(RestartPolicy restartPolicy) {
+        this.restartPolicy = restartPolicy;
+    }
 
-	/**
-	 * Obtains the service account name to use for tasks.
-	 *
-	 * @return the service account name
-	 */
-	public String getTaskServiceAccountName() {
-		return taskServiceAccountName;
-	}
+    /**
+     * Obtains the service account name to use for tasks.
+     *
+     * @return the service account name
+     */
+    public String getTaskServiceAccountName() {
+        return taskServiceAccountName;
+    }
 
-	/**
-	 * Sets the service account name to use for tasks.
-	 *
-	 * @param taskServiceAccountName the service account name
-	 */
-	public void setTaskServiceAccountName(String taskServiceAccountName) {
-		this.taskServiceAccountName = taskServiceAccountName;
-	}
+    /**
+     * Sets the service account name to use for tasks.
+     *
+     * @param taskServiceAccountName the service account name
+     */
+    public void setTaskServiceAccountName(String taskServiceAccountName) {
+        this.taskServiceAccountName = taskServiceAccountName;
+    }
 }

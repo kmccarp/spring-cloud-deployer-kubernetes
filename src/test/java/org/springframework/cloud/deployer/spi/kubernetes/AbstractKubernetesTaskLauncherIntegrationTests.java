@@ -45,55 +45,55 @@ import static org.awaitility.Awaitility.await;
  */
 abstract class AbstractKubernetesTaskLauncherIntegrationTests extends AbstractTaskLauncherIntegrationJUnit5Tests {
 
-	@Autowired
-	@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-	protected TaskLauncher taskLauncher;
+    @Autowired
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    protected TaskLauncher taskLauncher;
 
-	@Autowired
-	@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-	protected KubernetesClient kubernetesClient;
+    @Autowired
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    protected KubernetesClient kubernetesClient;
 
-	@Override
-	protected TaskLauncher provideTaskLauncher() {
-		return taskLauncher;
-	}
+    @Override
+    protected TaskLauncher provideTaskLauncher() {
+        return taskLauncher;
+    }
 
-	@Override
-	protected String randomName() {
-		return "task-" + UUID.randomUUID().toString().substring(0, 18);
-	}
+    @Override
+    protected String randomName() {
+        return "task-" + UUID.randomUUID().toString().substring(0, 18);
+    }
 
-	@Override
-	protected Resource testApplication() {
-		return new DockerResource("springcloud/spring-cloud-deployer-spi-test-app:latest");
-	}
+    @Override
+    protected Resource testApplication() {
+        return new DockerResource("springcloud/spring-cloud-deployer-spi-test-app:latest");
+    }
 
-	@Override
-	protected Timeout deploymentTimeout() {
-		return new Timeout(20, 5000);
-	}
+    @Override
+    protected Timeout deploymentTimeout() {
+        return new Timeout(20, 5000);
+    }
 
-	@Test
-	@Override
-	@Disabled("Currently reported as failed instead of cancelled")
-	public void testSimpleCancel() throws InterruptedException {
-		super.testSimpleCancel();
-	}
+    @Test
+    @Override
+    @Disabled("Currently reported as failed instead of cancelled")
+    public void testSimpleCancel() throws InterruptedException {
+        super.testSimpleCancel();
+    }
 
-	protected void logTestInfo(TestInfo testInfo) {
-		log.info("Testing {}...", testInfo.getTestMethod().map(Method::getName).orElse(testInfo.getDisplayName()));
-	}
+    protected void logTestInfo(TestInfo testInfo) {
+        log.info("Testing {}...", testInfo.getTestMethod().map(Method::getName).orElse(testInfo.getDisplayName()));
+    }
 
-	protected ConditionFactory awaitWithPollAndTimeout(Timeout timeout) {
-		return await().pollInterval(Duration.ofMillis(timeout.pause))
-				.atMost(Duration.ofMillis(timeout.maxAttempts * timeout.pause));
-	}
+    protected ConditionFactory awaitWithPollAndTimeout(Timeout timeout) {
+        return await().pollInterval(Duration.ofMillis(timeout.pause))
+                .atMost(Duration.ofMillis(timeout.maxAttempts * timeout.pause));
+    }
 
-	protected List<Pod> getPodsForTask(String taskName) {
-		return kubernetesClient.pods().withLabel("task-name", taskName).list().getItems();
-	}
+    protected List<Pod> getPodsForTask(String taskName) {
+        return kubernetesClient.pods().withLabel("task-name", taskName).list().getItems();
+    }
 
-	protected List<Job> getJobsForTask(String taskName) {
-		return kubernetesClient.batch().v1().jobs().withLabel("task-name", taskName).list().getItems();
-	}
+    protected List<Job> getJobsForTask(String taskName) {
+        return kubernetesClient.batch().v1().jobs().withLabel("task-name", taskName).list().getItems();
+    }
 }

@@ -23,14 +23,14 @@ import org.springframework.cloud.deployer.spi.app.DeploymentState;
  **/
 public class DefaultRunningPhaseDeploymentStateResolver extends CompositeDeploymentStateResolver {
 
-	public DefaultRunningPhaseDeploymentStateResolver(KubernetesDeployerProperties properties) {
-		super(
-			new PredicateRunningPhaseDeploymentStateResolver.ContainerReady(properties),
-			new PredicateRunningPhaseDeploymentStateResolver.ContainerCrashed(properties),
-			new PredicateRunningPhaseDeploymentStateResolver.RestartsDueToTheSameError(properties),
-			new PredicateRunningPhaseDeploymentStateResolver.CrashLoopBackOffRestarts(properties),
-			new PredicateRunningPhaseDeploymentStateResolver.ContainerTerminated(properties),
-			//default
-			containerStatus -> DeploymentState.deploying);
-	}
+    public DefaultRunningPhaseDeploymentStateResolver(KubernetesDeployerProperties properties) {
+        super(
+                new PredicateRunningPhaseDeploymentStateResolver.ContainerReady(properties),
+                new PredicateRunningPhaseDeploymentStateResolver.ContainerCrashed(properties),
+                new PredicateRunningPhaseDeploymentStateResolver.RestartsDueToTheSameError(properties),
+                new PredicateRunningPhaseDeploymentStateResolver.CrashLoopBackOffRestarts(properties),
+                new PredicateRunningPhaseDeploymentStateResolver.ContainerTerminated(properties),
+                //default
+                containerStatus -> DeploymentState.deploying);
+    }
 }

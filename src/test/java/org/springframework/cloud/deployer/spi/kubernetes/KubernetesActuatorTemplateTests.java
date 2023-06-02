@@ -51,125 +51,122 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class KubernetesActuatorTemplateTests {
-	private static MockWebServer mockActuator;
+    private static MockWebServer mockActuator;
 
-	private final AppDeployer appDeployer = mock(AppDeployer.class);
+    private final AppDeployer appDeployer = mock(AppDeployer.class);
 
-	private final ActuatorOperations actuatorOperations = new KubernetesActuatorTemplate(new RestTemplate(),
-			appDeployer, new AppAdmin());
+    private final ActuatorOperations actuatorOperations = new KubernetesActuatorTemplate(new RestTemplate(),
+            appDeployer, new AppAdmin());
 
-	private AppInstanceStatus appInstanceStatus;
+    private AppInstanceStatus appInstanceStatus;
 
-	@BeforeAll
-	static void setupMockServer() throws IOException {
-		mockActuator = new MockWebServer();
-		mockActuator.start();
-		mockActuator.setDispatcher(new Dispatcher() {
-			@Override
-			public MockResponse dispatch(RecordedRequest recordedRequest) throws InterruptedException {
-				switch (recordedRequest.getPath()) {
-				case "/actuator/info":
-					return new MockResponse().setBody(resourceAsString("actuator-info.json"))
-							.addHeader("Content-Type", "application/json").setResponseCode(200);
-				case "/actuator/health":
-					return new MockResponse().setBody("\"status\":\"UP\"}")
-							.addHeader("Content-Type", "application/json").setResponseCode(200);
-				case "/actuator/bindings":
-					return new MockResponse().setBody(resourceAsString("actuator-bindings.json"))
-							.addHeader("Content-Type", "application/json").setResponseCode(200);
-				case "/actuator/bindings/input":
-					if (recordedRequest.getMethod().equals("GET")) {
-						return new MockResponse().setBody(resourceAsString("actuator-binding-input.json"))
-								.addHeader("Content-Type", "application/json")
-								.setResponseCode(200);
-					}
-					else if (recordedRequest.getMethod().equals("POST")) {
-						if (!StringUtils.hasText(recordedRequest.getBody().toString())) {
-							return new MockResponse().setResponseCode(HttpStatus.BAD_REQUEST.value());
-						}
-						else {
-							return new MockResponse().setBody(recordedRequest.getBody())
-									.addHeader("Content-Type", "application/json").setResponseCode(200);
-						}
-					}
-					else {
-						return new MockResponse().setResponseCode(HttpStatus.BAD_REQUEST.value());
-					}
-				default:
-					return new MockResponse().setResponseCode(HttpStatus.NOT_FOUND.value());
-				}
-			}
-		});
-	}
+    @BeforeAll
+    static void setupMockServer() throws IOException {
+        mockActuator = new MockWebServer();
+        mockActuator.start();
+        mockActuator.setDispatcher(new Dispatcher() {
+            @Override
+            public MockResponse dispatch(RecordedRequest recordedRequest) throws InterruptedException {
+                switch (recordedRequest.getPath()) {
+                    case "/actuator/info":
+                        return new MockResponse().setBody(resourceAsString("actuator-info.json"))
+                                .addHeader("Content-Type", "application/json").setResponseCode(200);
+                    case "/actuator/health":
+                        return new MockResponse().setBody("\"status\":\"UP\"}")
+                                .addHeader("Content-Type", "application/json").setResponseCode(200);
+                    case "/actuator/bindings":
+                        return new MockResponse().setBody(resourceAsString("actuator-bindings.json"))
+                                .addHeader("Content-Type", "application/json").setResponseCode(200);
+                    case "/actuator/bindings/input":
+                        if (recordedRequest.getMethod().equals("GET")) {
+                            return new MockResponse().setBody(resourceAsString("actuator-binding-input.json"))
+                                    .addHeader("Content-Type", "application/json")
+                                    .setResponseCode(200);
+                        }else if (recordedRequest.getMethod().equals("POST")) {
+                            if (!StringUtils.hasText(recordedRequest.getBody().toString())) {
+                                return new MockResponse().setResponseCode(HttpStatus.BAD_REQUEST.value());
+                            }else {
+                                return new MockResponse().setBody(recordedRequest.getBody())
+                                        .addHeader("Content-Type", "application/json").setResponseCode(200);
+                            }
+                        }else {
+                            return new MockResponse().setResponseCode(HttpStatus.BAD_REQUEST.value());
+                        }
+                    default:
+                        return new MockResponse().setResponseCode(HttpStatus.NOT_FOUND.value());
+                }
+            }
+        });
+    }
 
-	@AfterAll
-	static void tearDown() throws IOException {
-		mockActuator.shutdown();
-	}
+    @AfterAll
+    static void tearDown() throws IOException {
+        mockActuator.shutdown();
+    }
 
-	@BeforeEach
-	void setUp() {
-		appInstanceStatus = mock(AppInstanceStatus.class);
-		Map<String, String> attributes = new HashMap<>();
-		attributes.put("pod.ip", "127.0.0.1");
-		attributes.put("actuator.port", String.valueOf(mockActuator.getPort()));
-		attributes.put("actuator.path", "/actuator");
-		attributes.put("guid", "test-application-0");
-		when(appInstanceStatus.getAttributes()).thenReturn(attributes);
-		when(appInstanceStatus.getState()).thenReturn(DeploymentState.deployed);
-		AppStatus appStatus = AppStatus.of("test-application-id")
-				.with(appInstanceStatus)
-				.build();
-		when(appDeployer.status(anyString())).thenReturn(appStatus);
-	}
+    @BeforeEach
+    void setUp() {
+        appInstanceStatus = mock(AppInstanceStatus.class);
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("pod.ip", "127.0.0.1");
+        attributes.put("actuator.port", String.valueOf(mockActuator.getPort()));
+        attributes.put("actuator.path", "/actuator");
+        attributes.put("guid", "test-application-0");
+        when(appInstanceStatus.getAttributes()).thenReturn(attributes);
+        when(appInstanceStatus.getState()).thenReturn(DeploymentState.deployed);
+        AppStatus appStatus = AppStatus.of("test-application-id")
+                .with(appInstanceStatus)
+                .build();
+        when(appDeployer.status(anyString())).thenReturn(appStatus);
+    }
 
-	@Test
-	void actuatorInfo() {
-		Map<String, Object> info = actuatorOperations
-				.getFromActuator("test-application-id", "test-application-0", "/info", Map.class);
+    @Test
+    void actuatorInfo() {
+        Map<String, Object> info = actuatorOperations
+                .getFromActuator("test-application-id", "test-application-0", "/info", Map.class);
 
-		assertThat(((Map<?, ?>) (info.get("app"))).get("name")).isEqualTo("log-sink-rabbit");
-	}
+        assertThat(((Map<?, ?>) (info.get("app"))).get("name")).isEqualTo("log-sink-rabbit");
+    }
 
-	@Test
-	void actuatorBindings() {
-		List<?> bindings = actuatorOperations
-				.getFromActuator("test-application-id", "test-application-0", "/bindings", List.class);
+    @Test
+    void actuatorBindings() {
+        List<?> bindings = actuatorOperations
+                .getFromActuator("test-application-id", "test-application-0", "/bindings", List.class);
 
-		assertThat(((Map<?, ?>) (bindings.get(0))).get("bindingName")).isEqualTo("input");
-	}
+        assertThat(((Map<?, ?>) (bindings.get(0))).get("bindingName")).isEqualTo("input");
+    }
 
-	@Test
-	void actuatorBindingInput() {
-		Map<String, Object> binding = actuatorOperations
-				.getFromActuator("test-application-id", "test-application-0", "/bindings/input", Map.class);
-		assertThat(binding.get("bindingName")).isEqualTo("input");
-	}
+    @Test
+    void actuatorBindingInput() {
+        Map<String, Object> binding = actuatorOperations
+                .getFromActuator("test-application-id", "test-application-0", "/bindings/input", Map.class);
+        assertThat(binding.get("bindingName")).isEqualTo("input");
+    }
 
-	@Test
-	void actuatorPostBindingInput() {
-		Map<String, Object> state = actuatorOperations
-				.postToActuator("test-application-id", "test-application-0", "/bindings/input",
-						Collections.singletonMap("state", "STOPPED"), Map.class);
-		assertThat(state.get("state")).isEqualTo("STOPPED");
-	}
+    @Test
+    void actuatorPostBindingInput() {
+        Map<String, Object> state = actuatorOperations
+                .postToActuator("test-application-id", "test-application-0", "/bindings/input",
+                        Collections.singletonMap("state", "STOPPED"), Map.class);
+        assertThat(state.get("state")).isEqualTo("STOPPED");
+    }
 
-	@Test
-	void noInstanceDeployed() {
-		when(appInstanceStatus.getState()).thenReturn(DeploymentState.failed);
-		assertThatThrownBy(() -> {
-			actuatorOperations
-					.getFromActuator("test-application-id", "test-application-0", "/info", Map.class);
+    @Test
+    void noInstanceDeployed() {
+        when(appInstanceStatus.getState()).thenReturn(DeploymentState.failed);
+        assertThatThrownBy(() -> {
+            actuatorOperations
+                    .getFromActuator("test-application-id", "test-application-0", "/info", Map.class);
 
-		}).isInstanceOf(IllegalStateException.class).hasMessageContaining("not deployed");
-	}
+        }).isInstanceOf(IllegalStateException.class).hasMessageContaining("not deployed");
+    }
 
-	private static String resourceAsString(String path) {
-		try {
-			return StreamUtils.copyToString(new ClassPathResource(path).getInputStream(), StandardCharsets.UTF_8);
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
-	}
+    private static String resourceAsString(String path) {
+        try {
+            return StreamUtils.copyToString(new ClassPathResource(path).getInputStream(), StandardCharsets.UTF_8);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
 }

@@ -35,32 +35,32 @@ import org.springframework.context.annotation.Configuration;
  * @author Chris Schaefer
  */
 public class KubernetesTestSupport extends AbstractExternalResourceTestSupport<KubernetesClient> {
-	private ConfigurableApplicationContext context;
+    private ConfigurableApplicationContext context;
 
-	public KubernetesTestSupport() {
-		super("KUBERNETES");
-	}
+    public KubernetesTestSupport() {
+        super("KUBERNETES");
+    }
 
-	@Override
-	public void cleanupResource() throws Exception {
-		context.close();
-	}
+    @Override
+    public void cleanupResource() throws Exception {
+        context.close();
+    }
 
-	@Override
-	public void obtainResource() throws Exception {
-		context = new SpringApplicationBuilder(Config.class).web(WebApplicationType.NONE).run();
-		resource = context.getBean(KubernetesClient.class);
-		resource.namespaces().list();
-	}
+    @Override
+    public void obtainResource() throws Exception {
+        context = new SpringApplicationBuilder(Config.class).web(WebApplicationType.NONE).run();
+        resource = context.getBean(KubernetesClient.class);
+        resource.namespaces().list();
+    }
 
-	@Configuration
-	@EnableAutoConfiguration
-	public static class Config {
-		private KubernetesDeployerProperties properties = new KubernetesDeployerProperties();
+    @Configuration
+    @EnableAutoConfiguration
+    public static class Config {
+        private KubernetesDeployerProperties properties = new KubernetesDeployerProperties();
 
-		@Bean
-		public KubernetesClient kubernetesClient() {
-			return KubernetesClientFactory.getKubernetesClient(this.properties);
-		}
-	}
+        @Bean
+        public KubernetesClient kubernetesClient() {
+            return KubernetesClientFactory.getKubernetesClient(this.properties);
+        }
+    }
 }

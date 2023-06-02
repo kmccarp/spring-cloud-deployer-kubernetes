@@ -39,7 +39,7 @@ abstract class ProbeCreator {
     private KubernetesDeployerProperties kubernetesDeployerProperties;
 
     ProbeCreator(KubernetesDeployerProperties kubernetesDeployerProperties,
-                 ContainerConfiguration containerConfiguration) {
+            ContainerConfiguration containerConfiguration) {
         this.containerConfiguration = containerConfiguration;
         this.kubernetesDeployerProperties = kubernetesDeployerProperties;
     }
@@ -65,6 +65,7 @@ abstract class ProbeCreator {
     protected String getDeploymentPropertyValue(String propertyName) {
         return PropertyParserUtils.getDeploymentPropertyValue(getDeploymentProperties(), propertyName);
     }
+
     protected String getDeploymentPropertyValue(String propertyName, String defaultValue) {
         return PropertyParserUtils.getDeploymentPropertyValue(getDeploymentProperties(), propertyName, defaultValue);
     }
@@ -86,6 +87,7 @@ abstract class ProbeCreator {
                 getDeploymentPropertyValue(propertyPrefix + propertySuffix, defaultValue)
         );
     }
+
     int getProbeIntProperty(String propertyPrefix, String probeName, String propertySuffix, int defaultValue) {
         String propertyValue = getDeploymentPropertyValue(propertyPrefix + probeName + propertySuffix,
                 getDeploymentPropertyValue(propertyPrefix + propertySuffix)
